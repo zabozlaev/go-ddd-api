@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  database:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: dev
+    ports:
+      - 3333:5432
