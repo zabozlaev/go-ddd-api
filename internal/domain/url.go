@@ -12,7 +12,7 @@ type URL struct {
 
 // CreateURL - DTO
 type CreateURL struct {
-	Origin    string `json:"origin"`
+	Origin    string `json:"origin" validate:"required,uri"`
 	Short     string
 	IP        string
 	UserAgent string

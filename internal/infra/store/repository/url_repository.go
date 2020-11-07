@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"database/sql"
 	"go-ddd-api/internal/domain"
+
+	"github.com/pkg/errors"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -9,6 +12,11 @@ import (
 type urlRepo struct {
 	db *sqlx.DB
 }
+
+var (
+	// ErrURLNotFound - not found err
+	ErrURLNotFound = errors.New("url not found")
+)
 
 // NewURLRepo - repo factory
 func NewURLRepo(db *sqlx.DB) domain.URLRepository {
@@ -21,7 +29,10 @@ func (ur *urlRepo) FindByShort(short string) (*domain.URL, error) {
 	err := ur.db.Get(&found, "SELECT * FROM urls WHERE short = $1;", short)
 
 	if err != nil {
-		return nil, err
+		if err == sql.ErrNoRows {
+			return nil, ErrURLNotFound
+		}
+		return nil, errors.Wrap(err, "selecting err")
 	}
 
 	return &found, nil

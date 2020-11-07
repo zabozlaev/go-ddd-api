@@ -3,6 +3,9 @@ package service
 import (
 	"go-ddd-api/internal/domain"
 	"go-ddd-api/internal/infra/store"
+	"go-ddd-api/internal/infra/store/repository"
+	"go-ddd-api/pkg/httperr"
+	"net/http"
 
 	"github.com/dchest/uniuri"
 	"github.com/sirupsen/logrus"
@@ -29,6 +32,10 @@ func (us *urlService) FindOrigin(s string) (string, error) {
 	found, err := us.store.URLRepo().FindByShort(s)
 
 	if err != nil {
+		switch err {
+		case repository.ErrURLNotFound:
+			return "", httperr.NewHttpError(err, http.StatusNotFound)
+		}
 		return "", err
 	}
 

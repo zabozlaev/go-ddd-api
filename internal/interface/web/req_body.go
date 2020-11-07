@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"errors"
 	"go-ddd-api/pkg/httperr"
 	"net/http"
 	"reflect"
@@ -11,7 +12,8 @@ import (
 )
 
 var (
-	validate = validator.New()
+	validate      = validator.New()
+	ErrValidation = errors.New("validation error")
 )
 
 func init() {
@@ -55,7 +57,7 @@ func DecodeJSONBody(r *http.Request, v interface{}) error {
 		}
 
 		return &httperr.Error{
-			Err:    err,
+			Err:    ErrValidation,
 			Fields: fields,
 			Code:   http.StatusUnprocessableEntity,
 		}
